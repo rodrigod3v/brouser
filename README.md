@@ -73,7 +73,7 @@ python -m venv .venv
 pip install -e ".[dev]"
 playwright install chromium
 
-cp .env.example .env            # preencha as keys — guia: docs/KEYS.md
+cp .env.example .env            # preencha as keys — comentarios inline no arquivo
 ```
 
 Validar instalacao:
@@ -120,7 +120,7 @@ Tudo via `.env` (copiado do `.env.example`). Variaveis principais:
 | `BROUSER_OBSIDIAN_VAULT` | — | pasta do vault de memoria |
 
 Lista completa e comentada: [.env.example](.env.example).
-**Onde conseguir cada key:** [docs/KEYS.md](docs/KEYS.md).
+**Onde conseguir cada key:** comentarios inline no [.env.example](.env.example).
 
 ## Desenvolvimento
 
@@ -176,7 +176,6 @@ Mais: [Brain-Brouser/runbooks](https://github.com/rodrigod3v/brouser) (vault loc
 
 - [PRD](docs/PRD.md) — produto, requisitos, metricas
 - [Arquitetura & design patterns](docs/ARCHITECTURE.md)
-- [Onde pegar as keys](docs/KEYS.md)
 - [AGENTS.md](AGENTS.md) — regras para agentes/contribuidores
 
 ## Licenca

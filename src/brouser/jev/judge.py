@@ -16,27 +16,28 @@ _RISKY_KINDS = {ActionKind.CLICK, ActionKind.TYPE, ActionKind.GOTO}
 
 
 class JevJudge:
-    def __init__(self, api_key: str) -> None:
+    def __init__(self, api_key: str, base_url: str = "", model: str = "jev-latest") -> None:
         self._api_key = api_key
-        self._client: AsyncTypeSafeClient | None = None
+        self._base_url = base_url or None
+        self._model = model
 
-    async def _ensure(self) -> None:
-        if self._client is None and self._api_key:
-            from typesafe_sdk import AsyncTypeSafeClient
+    def _client(self) -> AsyncTypeSafeClient:
+        """Client novo por chamada — `async with` fecha o client ao sair."""
+        from typesafe_sdk import AsyncTypeSafeClient
 
-            self._client = AsyncTypeSafeClient(api_key=self._api_key)
+        kwargs: dict[str, str] = {"api_key": self._api_key, "model": self._model}
+        if self._base_url:
+            kwargs["base_url"] = self._base_url
+        return AsyncTypeSafeClient(**kwargs)  # type: ignore[arg-type]
 
     async def is_risky(self, action: Action, context: str) -> bool:
         """True = acao sensivel (pagamento, envio irreversivel, delete...)."""
         if not self._api_key or action.kind not in _RISKY_KINDS:
             return False
-        await self._ensure()
         from typesafe_sdk import Noul
 
-        assert self._client is not None
-        async with self._client as client:
+        async with self._client() as client:
             resp = await client.system_one(
-                model="jev-latest",
                 state={
                     "page": context[:3000],
                     "action": action.model_dump_json(),
@@ -61,13 +62,10 @@ class JevJudge:
         """Segunda opiniao: a resposta realmente cumpre a tarefa?"""
         if not self._api_key:
             return False
-        await self._ensure()
         from typesafe_sdk import Noul
 
-        assert self._client is not None
-        async with self._client as client:
+        async with self._client() as client:
             resp = await client.system_one(
-                model="jev-latest",
                 state={
                     "task": task,
                     "agent_answer": answer,

@@ -32,6 +32,8 @@ class Settings(BaseSettings):
 
     # Jev / TypeSafe
     typesafe_api_key: str = ""
+    jev_base_url: str = "https://api.typesafe.ai"
+    jev_model: str = "jev-latest"
     jev_gate_enabled: bool = True
     jev_verify_done: bool = False
 

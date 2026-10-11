@@ -32,7 +32,11 @@ async def _run(task: str, routing_override: str | None) -> int:
         return 2
 
     llm = ModelRouter(settings).current()
-    judge = JevJudge(settings.typesafe_api_key) if settings.typesafe_api_key else None
+    judge = (
+        JevJudge(settings.typesafe_api_key, settings.jev_base_url, settings.jev_model)
+        if settings.typesafe_api_key
+        else None
+    )
     memory = ObsidianMemory(settings.vault_path) if settings.vault_path else None
 
     print(f"brouser v{__version__} | modelo: {llm.model_name} | task: {task}")
