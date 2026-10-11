@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "brouser"
+version = "0.1.0"
+description = "Browser proprio com agente de IA autonomo integrado ao opencode"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "playwright>=1.45",
+    "openai>=1.40",
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    "typesafe-sdk>=0.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.5",
+    "mypy>=1.10",
+    "pre-commit>=3.7",
+]
+
+[project.scripts]
+brouser = "brouser.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF", "BLE"]
+ignore = []
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests/unit"]
+markers = [
+    "integration: testes que abrem browser real (fora do CI default)",
+]
+
+[tool.mypy]
+python_version = "3.11"
+mypy_path = "src"
+packages = ["brouser"]
+strict = true
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["playwright.*", "typesafe_sdk.*"]
+ignore_missing_imports = true
